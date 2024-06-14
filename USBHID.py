@@ -216,11 +216,14 @@ class USBHID(QWidget):
             self.txtMain.clear()
 
         elif text == 'DAC':
+            self.chkWave.setCheckState(Qt.Unchecked)
+            
             self.on_cmbWave_currentIndexChanged(self.cmbWave.currentText())
             
         else:
+            self.chkWave.setCheckState(Qt.Unchecked)
+
             self.codec = codec.Codecs[text](self)
-            
             self.codec.info()
 
     @pyqtSlot(QtWidgets.QAbstractButton, bool)
