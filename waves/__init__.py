@@ -15,7 +15,8 @@ for file in os.listdir(path):
 
 
 
-
+# 打包时需要注释掉此段代码，否则会将 numpy、matplotlib、ipython 打包
+'''
 if __name__ == '__main__':
     from pylab import *
 
@@ -45,3 +46,4 @@ if __name__ == '__main__':
 
     plot(x, y)
     show()
+'''
