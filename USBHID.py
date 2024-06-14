@@ -77,15 +77,16 @@ class USBHID(QWidget):
             self.conf.set('ADC', 'chnl', '0x01')
 
             self.conf.add_section('DAC')
-            self.conf.set('DAC', 'chnl', '1')
+            self.conf.set('DAC', 'chnl', '0')
             self.conf.set('DAC', 'wave', '')
 
-        index = self.cmbPort.findText(self.conf.get('USB', 'port'))
-        self.cmbPort.setCurrentIndex(index if index != -1 else 0)
+        zero_if = lambda i: 0 if i == -1 else i
 
-        self.cmbCode.setCurrentIndex(self.cmbCode.findText(self.conf.get('USB', 'codec')))
+        self.cmbPort.setCurrentIndex(zero_if(self.cmbPort.findText(self.conf.get('USB', 'port'))))
 
-        self.cmbWave.setCurrentIndex(self.cmbWave.findText(self.conf.get('DAC', 'wave')))
+        self.cmbCode.setCurrentIndex(zero_if(self.cmbCode.findText(self.conf.get('USB', 'codec'))))
+
+        self.cmbWave.setCurrentIndex(zero_if(self.cmbWave.findText(self.conf.get('DAC', 'wave'))))
 
         try:
             self.adcChnl = int(self.conf.get('ADC', 'chnl'), 16)
@@ -186,6 +187,9 @@ class USBHID(QWidget):
                     if len(self.txtMain.toPlainText()) > 25000: self.txtMain.clear()
                     self.txtMain.append(text)
 
+            elif self.cmbCode.currentText() == 'DAC':
+                pass
+
             else:
                 list = self.dev.read()
                 if list:
@@ -261,9 +265,9 @@ class USBHID(QWidget):
         if self.btnOpen.text() == '断开连接':
             i = 0
             while i < len(self.Wave):
-                dword = self.Wave[i:i+15]   # 每个包 32 字节（16 字），第一个字是控制字，后面跟 15 个字的数据
+                dword = self.Wave[i:i+14]   # 每个包 32 字节（16 字），前两个字是控制字，后面跟 14 个字的数据
 
-                dbyte = [i & 0xFF, (self.dacChnl << 4) | (i >> 8)]  # 控制字高 4 位为 DAC 通道号，低 12 位为数据在波形上的偏移
+                dbyte = [self.dacChnl, len(dword), i & 0xFF, i >> 8]  # 第一个字节是通道号，第二个字节是包中数据个数，最后两个字节是数据在波形上的偏移
 
                 for x in dword:
                     dbyte.append(x & 0xFF)
@@ -271,7 +275,7 @@ class USBHID(QWidget):
 
                 self.dev.write(dbyte)
                 
-                i += 15
+                i += 14
 
     @pyqtSlot()
     def on_btnSend_clicked(self):
