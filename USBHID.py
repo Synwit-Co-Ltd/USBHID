@@ -130,9 +130,6 @@ class USBHID(QWidget):
             try:
                 self.dev = self.devices[self.cmbPort.currentText()]
                 self.dev.open()
-
-                if self.cmbCode.currentText() == 'DAC':
-                    self.dev.packet_size = 32   # 没这句 Win7 下发送不出数据
             except Exception as e:
                 print(e)
             else:
@@ -267,8 +264,9 @@ class USBHID(QWidget):
     def on_wavSend_clicked(self):
         if self.btnOpen.text() == '断开连接':
             i = 0
-            while i < len(self.Wave):
-                dword = self.Wave[i:i+14]   # 每个包 32 字节（16 字），前两个字是控制字，后面跟 14 个字的数据
+            N = self.dev.packet_size // 2 - 2   # 前两个字（2-byte）是控制字，后面跟 N 个字的数据
+            while i < len(self.Wave):           # TODO: self.dev.packet_size 被固定为了 64，没有正确反映端点大小
+                dword = self.Wave[i:i+N]
 
                 dbyte = [self.dacChnl, len(dword), i & 0xFF, i >> 8]  # 第一个字节是通道号，第二个字节是包中数据个数，最后两个字节是数据在波形上的偏移
 
@@ -278,7 +276,7 @@ class USBHID(QWidget):
 
                 self.dev.write(dbyte)
                 
-                i += 14
+                i += N
 
     @pyqtSlot()
     def on_btnSend_clicked(self):
