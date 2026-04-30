@@ -50,8 +50,9 @@ class RAMDisk(codec.Codec):
 
             if list[0] == 'write':
                 data.extend([0xFF] * (256 - len(data)))
-                for i in range(256 // 64):
-                    self.ui.dev.write(data[64*i:64*(i+1)])
+                N = self.ui.dev.packet_size
+                for i in range(256 // N):
+                    self.ui.dev.write(data[N*i:N*(i+1)])
 
         except Exception as e:
             self.ui.txtMain.append('\nCommand send fail\n')
