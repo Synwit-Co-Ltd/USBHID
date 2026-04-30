@@ -310,6 +310,73 @@
       </widget>
      </item>
      <item>
+      <widget class="QLabel" name="lblEPSize">
+       <property name="text">
+        <string>端点大小</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cmbEPSize">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>wMaxPacketSize</string>
+       </property>
+       <property name="toolTipDuration">
+        <number>2000</number>
+       </property>
+       <property name="currentIndex">
+        <number>3</number>
+       </property>
+       <item>
+        <property name="text">
+         <string>8</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>16</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>32</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>64</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>128</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>256</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>512</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="btnClear">
        <property name="minimumSize">
         <size>
@@ -370,11 +437,11 @@
  <resources/>
  <connections/>
  <buttongroups>
+  <buttongroup name="bgrpDAC"/>
   <buttongroup name="bgrpADC">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="bgrpDAC"/>
  </buttongroups>
 </ui>

@@ -130,17 +130,21 @@ class USBHID(QWidget):
             try:
                 self.dev = self.devices[self.cmbPort.currentText()]
                 self.dev.open()
+
+                self.dev.packet_size = int(self.cmbEPSize.currentText())
             except Exception as e:
                 print(e)
             else:
                 self.cmbPort.setEnabled(False)
                 self.cmbCode.setEnabled(False)
+                self.cmbEPSize.setEnabled(False)
                 self.btnOpen.setText('断开连接')
         else:
             self.dev.close()
 
             self.cmbPort.setEnabled(True)
             self.cmbCode.setEnabled(True)
+            self.cmbEPSize.setEnabled(True)
             self.btnOpen.setText('打开连接')
 
     def on_tmrRcv_timeout(self):
@@ -265,7 +269,7 @@ class USBHID(QWidget):
         if self.btnOpen.text() == '断开连接':
             i = 0
             N = self.dev.packet_size // 2 - 2   # 前两个字（2-byte）是控制字，后面跟 N 个字的数据
-            while i < len(self.Wave):           # TODO: self.dev.packet_size 被固定为了 64，没有正确反映端点大小
+            while i < len(self.Wave):
                 dword = self.Wave[i:i+N]
 
                 dbyte = [self.dacChnl, len(dword), i & 0xFF, i >> 8]  # 第一个字节是通道号，第二个字节是包中数据个数，最后两个字节是数据在波形上的偏移
