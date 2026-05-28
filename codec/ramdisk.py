@@ -49,9 +49,9 @@ class RAMDisk(codec.Codec):
             self.ui.dev.write(cmd)
 
             if list[0] == 'write':
-                data.extend([0xFF] * (256 - len(data)))
+                data.extend([0xFF] * (self.PAGE_SIZE - len(data)))
                 N = self.ui.dev.packet_size
-                for i in range(256 // N):
+                for i in range(self.PAGE_SIZE // N):
                     self.ui.dev.write(data[N*i:N*(i+1)])
 
         except Exception as e:
@@ -63,16 +63,21 @@ class RAMDisk(codec.Codec):
         self.ui.txtMain.append(f'RX:\n{text}\n')
 
     def info(self):
+        if self.ui.cmbEPSize.currentText() == '512':
+            self.PAGE_SIZE = 512
+        else:
+            self.PAGE_SIZE = 256
+
         self.ui.txtMain.clear()
-        self.ui.txtMain.append('''read and write RAMDisk through hid command, supported command:
+        self.ui.txtMain.append(f'''read and write RAMDisk through hid command, supported command:
 
 erase <start sector> <sector count>
 erase 0 1
 
 write <page number>
-write 0 00 11 AA FF 99 ... <up to 256 bytes>
+write 0 00 11 AA FF 99 ... <up to {self.PAGE_SIZE} bytes>
 
 read <page number>
 read 0
 
-note: page size is 256 bytes, sector size is 1024 bytes, total size is 4096 bytes\n\n''')
+note: page size is {self.PAGE_SIZE} bytes, sector size is 1024 bytes, total size is 4096 bytes\n\n''')

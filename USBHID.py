@@ -227,6 +227,11 @@ class USBHID(QWidget):
             self.codec = codec.Codecs[text](self)
             self.codec.info()
 
+    @pyqtSlot(str)
+    def on_cmbEPSize_currentIndexChanged(self, text):
+        if self.cmbCode.currentText() == 'RAMDisk':
+            self.codec.info()
+
     @pyqtSlot(QtWidgets.QAbstractButton, bool)
     def on_bgrpADC_buttonToggled(self, button, checked):
         if not hasattr(self, 'PlotChart'): return
